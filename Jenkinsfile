@@ -1,7 +1,9 @@
 pipeline {
     agent {
         docker {
+            // Use a Docker image that supports Docker-in-Docker (DinD)
             image 'docker:20.10-dind'
+            // Mount the Docker socket to the container
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -74,6 +76,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Ensure Docker daemon is available
+                    sh "docker info"
+
                     // Build the Docker image
                     sh "docker build -t ${DOCKER_IMAGE} ."
 
